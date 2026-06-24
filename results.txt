@@ -1,0 +1,28 @@
+Salt-structure spacing analysis -- numeric results
+
+============================================================
+GULF OF MEXICO  (USGS gcdiapirg, N=1253)
+============================================================
+province / subset                         N   NND     R      p verdict
+Whole basin (all pooled)               1253  11.1  0.65  1.000 clustered
+N. Gulf shelf/slope + coast             571  11.6  1.10  0.002 regular
+Texas-Louisiana shelf core              271  12.0  1.12  0.002 regular
+Bay of Campeche                         366   9.2  1.02  0.240 random
+Onshore interior basins                 146  13.5  0.82  1.000 clustered
+
+Gulf TX-LA g(r) global test: p(CSR)=0.0110, p(inhom)=0.0100
+
+============================================================
+NORTH GERMAN BASIN  (BGR InSpEE, 693 structures)
+============================================================
+subset                                    N   NND     R      p verdict
+All structures                          693  10.1  1.21  0.002 regular
+All halokinetic                         571  11.1  1.21  0.002 regular
+Central basin halokinetic               302  10.3  1.41  0.002 regular
+Glueckstadt Graben halokinetic          109  11.0  1.47  0.002 regular
+Salt diapirs only (mature)              159  11.1  0.88  0.996 clustered
+Salt pillows only                       205  15.0  1.11  0.004 regular
+
+NGB central-basin halokinetic (N=302): R=1.409, p(disp)=0.0010; g(r) global p(CSR)=0.0010, p(inhom)=0.0025
+
+NGB S(k): gradient spike S=3.51 @ k=0.024; dip S=0.42 @ k=0.17 (~37 km); number-variance scaling R^2.78
