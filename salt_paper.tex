@@ -1,0 +1,382 @@
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{natbib}
+\usepackage{graphicx}
+\graphicspath{{figures/}}
+\usepackage{booktabs}
+\usepackage{caption}
+\usepackage[hidelinks]{hyperref}
+\captionsetup{font=small,labelfont=bf}
+\setlength{\parskip}{2pt}
+\setlength{\emergencystretch}{3em}
+
+\title{\bfseries Regular spacing of salt structures as a Rayleigh--Taylor signature:
+edge-corrected point-pattern and structure-factor analysis of the U.S.\ Gulf Coast and North German basins}
+\author{R.~Chen\\{\small GUT Geoservice Inc., Montr\'eal, Qu\'ebec, Canada}}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\noindent
+Salt structures rise by a buoyancy-driven (Rayleigh--Taylor) instability that, in theory, selects a
+characteristic wavelength and should therefore imprint a \emph{regular} map-view spacing of diapirs and
+pillows. Empirically the record is mixed: several provinces show little or no characteristic wavelength,
+and Rayleigh--Taylor models often fail to reproduce observed spacing. Whether complete salt-structure
+\emph{populations} are statistically regular in map view has rarely been tested with modern edge-corrected
+spatial statistics. We analyse two large open datasets --- 1253 Gulf Coast salt diapirs (USGS) and 693
+North German salt structures (BGR InSpEE) --- using the Clark--Evans nearest-neighbour index, the pair
+correlation function $g(r)$, Ripley's $L$, and the structure factor $S(k)$ with number variance, against
+both complete-spatial-randomness (CSR) and inhomogeneous-Poisson null models. Pooled across a whole basin
+the structures are \emph{clustered}, but this reflects the superposition of distinct sub-basins; within a
+single coherent loading-driven province the structures are significantly \emph{regularly spaced}
+(Clark--Evans $R=1.10$--$1.47$, $p\approx0.002$; robust to a density-gradient inhomogeneous-Poisson null),
+with hard-core exclusion and a 12--15\,km characteristic spacing. Regularity strengthens with salt
+thickness (Gl\"uckstadt Graben $>$ central basin $>$ Gulf shelf), as expected for wavelength selection. The
+mature-diapir sub-class \emph{alone} is clustered because mature diapirs concentrate in depocentres, so
+sub-class selection must be avoided. The structure factor shows genuine intermediate-range suppression
+($S\!\approx\!0.42$ at a $\sim$37\,km scale, below the gradient-matched null) but the long-wavelength limit
+is masked by the intrinsic basin density gradient, so strong hyperuniformity cannot be confirmed. The
+results provide a quantitative, statistically hardened map-view signature of Rayleigh--Taylor wavelength
+selection, together with explicit cautions on superposition, sub-class selection, and density gradients.
+\end{abstract}
+
+\section{Introduction}
+Salt flows on geological timescales and, being less dense than its overburden, is gravitationally unstable:
+a buried salt layer overlain by denser sediment is subject to a Rayleigh--Taylor (RT) instability whose
+linear theory selects a dominant wavelength set primarily by the salt-layer thickness and the
+viscosity/strength contrast \citep{trusheim1960,hudec2007,fernandez2015}. Because the fastest-growing mode
+has a finite wavelength, the classical expectation is that salt pillows and the diapirs that evolve from
+them should be \emph{quasi-regularly spaced} in map view, each structure surrounded by a salt-withdrawal
+rim syncline that suppresses the growth of close neighbours.
+
+Whether real provinces realise this prediction is, however, unsettled. Spacing/thickness relations are
+reproduced in some settings but not others; variogram and spectral analyses of certain provinces report
+essentially stochastic salt-surface topography with no uniform wavelength, and detailed studies find that
+simple RT models often fail to reproduce observed diapir spacing once sedimentation, basement structure and
+later shortening are accounted for \citep{jackson2017}. Real salt tectonics is further complicated by
+structural inheritance: where salt ascent is localised by pre-existing faults, structures tend to align and
+\emph{cluster} rather than disperse. The map-view spacing of a complete salt-structure population is
+therefore an open empirical question, and one that is well posed for spatial point-pattern analysis.
+
+Surprisingly, although nearest-neighbour and spacing statistics have long been used on individual salt
+provinces, complete salt-structure populations have rarely been examined with modern edge-corrected
+point-pattern statistics combined with the structure factor, explicit null models, and attention to the
+basin-scale density gradient that is intrinsic to salt provinces. Here we do so for two large, openly
+licensed datasets that together span the two end-member tectonic settings of passive-margin
+sediment-loading (U.S.\ Gulf Coast) and an intracratonic basin with both loading- and inversion-driven salt
+movement (North German Basin). We ask three questions: (i) are loading-driven salt-structure populations
+significantly regularly spaced, and is any regularity robust to the basin density gradient; (ii) does the
+strength of regularity scale with salt thickness, as RT wavelength selection predicts; and (iii) what is
+the \emph{character} of the order --- merely a liquid-like spacing, or a longer-range suppression of density
+fluctuations?
+
+\section{Data}
+\paragraph{U.S.\ Gulf Coast (USGS).}
+We use the U.S.\ Geological Survey compilation \emph{Salt Diapirs in the Gulf Coast} (gcdiapirg;
+\citealp{usgsgc}), itself derived from \citet{martin1980} and regional structural compilations. The dataset
+contains 1253 salt-diapir outline polygons (NAD83 geographic coordinates) spanning the onshore and offshore
+Gulf Coast from Texas to Florida and south to the Bay of Campeche. We take the area-weighted polygon
+centroid as the point representing each structure and project geographic coordinates to a local Cartesian
+frame (equirectangular projection at the mean latitude); all distances are reported in kilometres.
+
+\paragraph{North German Basin (BGR InSpEE).}
+We use the BGR \emph{InSpEE-Salzstrukturen} dataset (\citealp{bgr}; base mapping after
+\citealp{reinhold2008}), an open shapefile (ETRS89 / UTM zone 32N, metres) of salt-structure outlines in
+Northern Germany. The 855 polygons resolve into 693 named structures (area-weighted centroid per structure).
+A companion internal-structure-type layer classifies each structure as a salt diapir
+(\textit{Salzdiapir}, $n=159$), a compressively overprinted diapir ($n=107$), a salt pillow
+(\textit{Salzkissen}, $n=205$), a double-salinar structure ($n=100$), a tectonic structure ($n=86$), or
+unassigned. We define the \emph{halokinetic} population as the loading/ascent-driven structures (diapirs,
+compressively overprinted diapirs, pillows and double-salinar structures; $n=571$), excluding the purely
+tectonic and unassigned ones.
+
+\section{Methods}
+\paragraph{Province subsetting.}
+A point pattern pooled over several distinct sub-basins is the superposition of independent processes and
+will generally appear clustered even if each sub-basin is internally regular. We therefore report whole-basin
+statistics for context but base inference on coherent single-province sub-regions of approximately uniform
+tectonic setting.
+
+\paragraph{Nearest-neighbour index.}
+The Clark--Evans index \citep{clark1954} is $R=\bar d_{\mathrm{NN}}/\bar d_{\mathrm{CSR}}$, where
+$\bar d_{\mathrm{NN}}$ is the mean nearest-neighbour distance. To remove edge bias we estimate
+$\bar d_{\mathrm{CSR}}$ by Monte-Carlo simulation of complete spatial randomness (CSR) in the identical
+convex-hull window (here $S=499$ realisations), so that $R>1$ indicates dispersion/regularity and $R<1$
+clustering relative to the matched null; a one-sided $p$-value for dispersion is obtained by rank.
+
+\paragraph{Second-order statistics.}
+The pair correlation function $g(r)$ and Ripley's $K$ (reported as $L(r)-r=\sqrt{K(r)/\pi}-r$) are computed
+with the border (reduced-sample) edge correction \citep{ripley1977,baddeley2015}. $g(r)=0$ at small $r$
+measures hard-core exclusion; the first $g(r)$ maximum gives the characteristic spacing; $L(r)-r<0$
+indicates regularity. Significance is assessed with the global studentised maximum-deviation envelope test
+\citep{myllymaki2017} over the interaction range, against (i) a CSR null and (ii) an inhomogeneous-Poisson
+null whose intensity is a Gaussian kernel estimate of the observed intensity (bandwidth $2\times$ median
+nearest-neighbour distance). The inhomogeneous null builds the basin density gradient into the reference, so
+that a significant result is not an artifact of the gradient; because a smooth gradient biases the
+statistics toward \emph{clustering}, detection of regularity against this null is conservative.
+
+\paragraph{Structure factor and number variance.}
+The structure factor $S(\mathbf k)=N^{-1}\big|\sum_j e^{-i\mathbf k\cdot\mathbf r_j}\big|^2$ is evaluated at
+the wavevectors allowed by the rectangular bounding window and radially averaged; this direct estimator
+avoids density-field gridding artifacts. We also compute the number variance $\sigma^2(R)$ of point counts
+in interior discs of radius $R$. Both are compared to CSR and inhomogeneous-Poisson nulls. A long-wavelength
+limit $S(k\!\to\!0)\to0$ (equivalently $\sigma^2(R)$ growing more slowly than the window area) would indicate
+hyperuniformity \citep{torquato2018}; a finite $S(k\!\to\!0)$ with a packing peak indicates a liquid-like
+regular pattern.
+
+\section{Results}
+
+\subsection{Gulf Coast: clustered when pooled, regular within provinces}
+Pooled over the whole Gulf the diapirs are strongly clustered (Clark--Evans $R=0.65$; Fig.~\ref{fig:gulfmap}),
+as expected for the superposition of several salt basins separated by salt-free ground. Restricting to single
+coherent loading-driven provinces reverses the verdict: the Texas--Louisiana shelf core ($N=271$) and the
+broader northern-Gulf shelf/slope and coastal province ($N=571$) are significantly \emph{regular}
+($R=1.12$ and $1.10$; one-sided $p=0.002$; Table~\ref{tab:R}). The Bay of Campeche is indistinguishable from
+random, and the onshore interior salt basins, pooled across separate depocentres, are clustered
+(Table~\ref{tab:R}).
+
+The pair correlation of the Texas--Louisiana province (Fig.~\ref{fig:gulfgr}) shows hard-core exclusion
+($g(r)=0$ below $\sim$4\,km), a clear packing peak ($g\!\approx\!1.5$) near 13\,km, and damped oscillations
+toward unity --- the classic signature of a regular/liquid-like pattern. The observed $g(r)$ lies below both
+the CSR and inhomogeneous-Poisson envelopes at small $r$; the global envelope test over $r\le16$\,km gives
+$p=0.013$ against CSR and $p=0.010$ against the inhomogeneous null. Correspondingly $L(r)-r<0$ for
+$r\lesssim13$\,km. (At larger $r$, $L(r)-r$ turns positive; for this elongate shelf band this is a
+convex-hull window artifact rather than true clustering, and is not interpreted as long-range structure.)
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\textwidth]{gulf_overview.pdf}
+\caption{Gulf Coast salt diapirs (USGS gcdiapirg, $N=1253$). Left: centroids of diapir polygons. Right:
+binned counts highlighting the separate salt basins (northern-Gulf shelf/slope and coastal trend; Bay of
+Campeche) and the strong basin-scale density variation. Pooled over all basins the pattern is clustered
+($R=0.65$); single coherent provinces are regular (Table~\ref{tab:R}).}
+\label{fig:gulfmap}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.74\textwidth]{gulf_pair_correlation.pdf}
+\caption{Pair correlation $g(r)$ of the Texas--Louisiana shelf province with $95\%$ Monte-Carlo envelopes
+for CSR (grey) and an inhomogeneous-Poisson null carrying the density gradient (orange). Hard-core
+exclusion below $\sim$4\,km and a packing peak near 13\,km; the observed curve falls below both envelopes at
+small $r$ (global test $p=0.013$ vs.\ CSR, $p=0.010$ vs.\ inhomogeneous null).}
+\label{fig:gulfgr}
+\end{figure}
+
+\subsection{North German Basin: stronger, cleaner regularity}
+The North German salt structures are significantly regular already as a whole population ($R=1.22$, $N=693$;
+$R=1.21$ for the halokinetic subset). Restricting to the central basin sharpens the signal markedly: the
+central-basin halokinetic structures ($N=302$) give $R=1.41$ ($p=0.002$), and the Gl\"uckstadt Graben ---
+the deepest, thickest-salt depocentre --- gives the strongest value, $R=1.47$ (Table~\ref{tab:R};
+Fig.~\ref{fig:degrmap}).
+
+The second-order statistics (Fig.~\ref{fig:degrgr}) confirm a strong, clean regularity: $g(r)=0$ below
+$\sim$7\,km, a packing peak near 15\,km, and $L(r)-r$ strongly negative (to $-3.7$\,km), lying outside the
+CSR envelope over $r\approx4$--18\,km before returning to $\approx0$ at large $r$. Unlike the elongate Gulf
+band, the compact central-basin window produces no spurious large-$r$ positivity. The global envelope test
+over $r\le14$\,km gives $p=0.001$ against CSR and $p=0.0025$ against the inhomogeneous null: the regularity
+is not an artifact of the basin density gradient.
+
+A counterintuitive sub-result sharpens the interpretation. The complete halokinetic population is regular,
+but the mature-diapir sub-class \emph{alone} (\textit{Salzdiapir}, $N=159$) is \emph{clustered} ($R=0.88$;
+Table~\ref{tab:R}). Pillows alone are weakly regular ($R=1.11$). Mature diapirs preferentially occupy the
+thickest-salt depocentres, so selecting them is a spatially biased sub-sampling that concentrates points and
+manufactures clustering; the regularly spaced unit is the full structure population, not a maturity class.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.92\textwidth]{ngb_type_map.pdf}
+\caption{North German salt structures (BGR InSpEE, 693 structures) coloured by internal type. Diapirs,
+compressively overprinted diapirs, pillows and double-salinar structures constitute the halokinetic
+population; double-salinar structures and many diapirs concentrate in the deep central basin / Gl\"uckstadt
+Graben, where regularity is strongest.}
+\label{fig:degrmap}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\textwidth]{ngb_pair_correlation_ripley.pdf}
+\caption{Central-basin halokinetic structures ($N=302$). Left: $g(r)$ with CSR and inhomogeneous-Poisson
+$95\%$ envelopes (hard-core to $\sim$7\,km, packing peak near 15\,km; global test $p=0.001$ vs.\ CSR,
+$p=0.0025$ vs.\ inhomogeneous null). Right: $L(r)-r$ strongly negative (regular) over $r\approx4$--18\,km,
+returning to $\approx0$ at large $r$.}
+\label{fig:degrgr}
+\end{figure}
+
+\subsection{Character of the order: intermediate-range suppression, gradient-limited at long range}
+The direct structure factor of the central-basin population (Fig.~\ref{fig:degrsk}) has three features. The
+single lowest accessible mode spikes to $S\!\approx\!3.5$; this is the basin-scale density gradient (salt
+concentrating in depocentres) and lies within the inhomogeneous-Poisson envelope. Above it, $S(k)$ dips to a
+minimum $S_{\min}\!\approx\!0.42$ near $k=0.17\,\mathrm{km}^{-1}$ (a length scale of $\sim$37\,km, roughly
+three times the packing spacing), \emph{below} the gradient-matched null --- a genuine suppression of
+intermediate-wavelength density fluctuations. The packing peak itself is weak ($S\!\approx\!1.11$ at
+$k=0.55\,\mathrm{km}^{-1}$). The number variance is suppressed by $\sim$40\% relative to the
+inhomogeneous-Poisson null, but its absolute scaling is super-Poissonian ($\sigma^2\!\sim\!R^{2.8}$,
+gradient-dominated, far from the hyperuniform $R^{1}$) and the suppression weakens at the largest $R$.
+
+The character of the salt-structure pattern is therefore a locally rigid, intermediate-range-suppressed
+disordered liquid: significantly more ordered than random at short and intermediate range, but \emph{not} a
+confirmed hyperuniform pattern. The obstruction to a long-range verdict is physical, not statistical: the
+density gradient intrinsic to any salt basin (structures concentrate where salt is thickest) dominates the
+lowest-$k$ modes, so $S(k\!\to\!0)\to0$ can be neither confirmed nor excluded from map data alone.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\textwidth]{ngb_structure_factor.pdf}
+\caption{Left: direct structure factor $S(k)$ of the central-basin population with CSR and
+inhomogeneous-Poisson $95\%$ envelopes. A gradient spike at the lowest mode, a suppression dip
+($S\!\approx\!0.42$ at $\sim$37\,km scale) below the gradient-matched null, and a weak packing peak. Right:
+number variance $\sigma^2(R)$; suppressed relative to the inhomogeneous-Poisson null but with
+gradient-dominated $\sim\!R^{2.8}$ scaling, not the hyperuniform $R^{1}$.}
+\label{fig:degrsk}
+\end{figure}
+
+\begin{table}[t]
+\centering
+\caption{Clark--Evans index $R$ (edge-corrected against a matched CSR Monte-Carlo null, $S=499$) and
+one-sided dispersion $p$. $R>1$: regular/dispersed; $R\approx1$: random; $R<1$: clustered. NND $=$ median
+nearest-neighbour distance.}
+\label{tab:R}
+\small
+\begin{tabular}{lrrrl}
+\toprule
+Province / subset & $N$ & NND (km) & $R$ & verdict \\
+\midrule
+\multicolumn{5}{l}{\emph{U.S.\ Gulf Coast (USGS gcdiapirg)}}\\
+\quad Whole basin (all pooled)            & 1253 & 11.1 & 0.65 & clustered \\
+\quad N.\ Gulf shelf/slope $+$ coast      & 571  & 11.6 & 1.10 & regular ($p=0.002$) \\
+\quad Texas--Louisiana shelf core         & 271  & 12.0 & 1.12 & regular ($p=0.002$) \\
+\quad Bay of Campeche                     & 366  & 9.2  & 1.02 & random \\
+\quad Onshore interior basins (pooled)    & 146  & 13.5 & 0.82 & clustered \\
+\midrule
+\multicolumn{5}{l}{\emph{North German Basin (BGR InSpEE)}}\\
+\quad All structures                      & 693  & 10.1 & 1.22 & regular ($p=0.002$) \\
+\quad All halokinetic                     & 571  & 11.1 & 1.21 & regular ($p=0.002$) \\
+\quad Central basin, halokinetic          & 302  & 10.3 & 1.41 & regular ($p=0.002$) \\
+\quad Gl\"uckstadt Graben, halokinetic    & 109  & 11.0 & 1.47 & regular ($p=0.002$) \\
+\quad Salt diapirs only (mature)          & 159  & 11.1 & 0.88 & clustered \\
+\quad Salt pillows only                   & 205  & 15.0 & 1.11 & regular ($p=0.004$) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Discussion}
+
+\paragraph{A map-view Rayleigh--Taylor signature.}
+Within coherent loading-driven provinces, salt-structure populations in both basins are significantly
+regularly spaced, with hard-core exclusion and a 12--15\,km characteristic spacing. This is the spatial
+expression expected of RT wavelength selection combined with salt-withdrawal exclusion. The hard-core
+component has a concrete halokinetic origin: as a structure grows it withdraws salt from its surroundings,
+thinning the mother-salt layer into a peripheral rim syncline that may weld out entirely as a primary salt
+weld \citep{hudec2007,jackson2017}. Where the source layer is locally exhausted a neighbouring structure
+cannot nucleate, so the withdrawal aureole acts as an exclusion radius --- the map-view counterpart of the
+observed $g(r)=0$ at small separations --- while the finite RT wavelength sets the dominant spacing between
+structures. Two observations argue for an RT origin rather than purely structural control. First, the result
+replicates across two independent basins and tectonic settings. Second, regularity strengthens
+systematically with salt thickness --- weakest on the Gulf shelf, stronger in the central North German
+basin, strongest in the deep, thick-salt Gl\"uckstadt Graben --- consistent with the RT prediction that the
+selected wavelength (and hence the clarity of a single dominant spacing) increases with salt-layer
+thickness. Purely fault-localised ascent, by contrast, would align and cluster structures, as is indeed seen
+where structures are pooled across sub-basins or where ascent follows inherited faults.
+
+\paragraph{Trigger versus spacing control.}
+This is not a claim that salt ascent is independent of structural control. Extension and basement faulting
+commonly trigger or localise diapirism --- reactive diapirism, in which a fault provides the initial
+weakness for salt to exploit \citep{vendeville1992} --- and where ascent remains dominated by inherited
+faults the structures align and cluster rather than disperse. Our own data show exactly this: the pooled
+onshore interior basins are clustered ($R=0.82$), and salt structures in the fault-influenced parts of the
+basins do not contribute the regular signal. The claim here is therefore narrower and explicitly
+setting-dependent: \emph{within loading-dominated provinces}, whatever the initial trigger, the
+characteristic spacing of the mature structure population is governed by the buoyant (RT) wavelength and
+salt-withdrawal exclusion, yielding a statistically regular map pattern; faulting may set where structures
+begin, but buoyant wavelength selection sets how far apart they end up. The regularity is thus an emergent
+property of the loading-driven provinces, not a universal property of salt tectonics.
+
+\paragraph{Three methodological cautions.}
+The analysis exposes three ways to reach a wrong verdict from the same data. (i) \emph{Superposition}:
+pooling distinct sub-basins superposes independent processes and manufactures apparent clustering (the
+whole-Gulf $R=0.65$, the pooled onshore interior $R=0.82$); inference must be made within single provinces.
+(ii) \emph{Sub-class selection}: analysing only mature diapirs returns clustering ($R=0.88$) because
+maturity is spatially biased toward depocentres; the regularly spaced unit is the complete structure
+population, not a maturity class. (iii) \emph{Density gradient}: the basin-scale concentration of salt in
+depocentres injects low-wavenumber power that masks the long-wavelength behaviour and biases the statistics
+toward clustering. We control for the first by province subsetting, the second by analysing the full
+halokinetic population, and the third by testing against an inhomogeneous-Poisson null --- against which the
+detected regularity, being conservative, survives.
+
+\paragraph{Character and limits.}
+The two families of statistic deliberately probe different scales: the Clark--Evans index and the
+small-$r$ pair correlation measure short-range, hard-core exclusion, whereas the low-wavenumber limit of
+$S(k)$ and the large-$R$ number variance measure the long-range suppression of density fluctuations. The
+salt-structure populations are unambiguous on the former --- they are significantly short-range regular ---
+and gradient-limited on the latter. The structure factor shows that the order extends beyond nearest
+neighbours: density fluctuations are
+suppressed at intermediate wavelengths ($\sim$3 times the packing spacing) below the gradient-matched null.
+But the long-wavelength limit, and hence any claim of hyperuniformity, is inaccessible from map data because
+the intrinsic basin density gradient dominates the lowest-$k$ modes. The salt-structure populations are thus
+best described as locally rigid, intermediate-range-suppressed disordered liquids. The same point-pattern
+and structure-factor diagnostics used here are those applied to disordered, fluctuation-suppressed systems
+generally \citep{torquato2018}; their application to salt basins is, to our knowledge, new, and provides a
+reproducible, statistically hardened way to quantify halokinetic self-organisation in map view.
+
+\section{Conclusions}
+\begin{itemize}\setlength\itemsep{1pt}
+\item Salt-structure populations in coherent loading-driven provinces of the U.S.\ Gulf Coast and the North
+German Basin are significantly regularly spaced (Clark--Evans $R=1.10$--$1.47$, $p\approx0.002$), with
+hard-core exclusion and a 12--15\,km characteristic spacing, robust to a density-gradient
+inhomogeneous-Poisson null.
+\item Regularity strengthens with salt thickness (Gl\"uckstadt Graben $>$ central basin $>$ Gulf shelf),
+consistent with Rayleigh--Taylor wavelength selection plus salt-withdrawal exclusion.
+\item The order is real at short and intermediate range, but long-range hyperuniformity cannot be confirmed:
+the intrinsic basin density gradient masks the long-wavelength limit.
+\item Whole-basin pooling and mature-diapir-only sub-sampling both spuriously return clustering; correct
+inference requires single-province analysis of the complete structure population.
+\end{itemize}
+
+\section*{Data availability}
+U.S.\ Gulf Coast salt diapirs: USGS data release \emph{Salt Diapirs in the Gulf Coast} (gcdiapirg),
+\href{https://doi.org/10.5066/P9KH3WB4}{doi:10.5066/\allowbreak P9KH3WB4} (public domain). North German salt structures:
+BGR \emph{InSpEE-Salzstrukturen} (\copyright\ BGR, Hannover, 2015), open geodata licence (geonutzv); base
+mapping after \citet{reinhold2008}. Analysis used only open scientific Python (NumPy, SciPy, Matplotlib).
+All analysis code, the derived coordinate datasets, the figure-generation scripts and the numeric results
+are openly available at \url{https://github.com/Ruqing1963/salt-structure-spacing}.
+
+\begin{thebibliography}{99}
+\small
+\bibitem[Baddeley et al.(2015)]{baddeley2015} Baddeley, A., Rubak, E., Turner, R., 2015.
+\textit{Spatial Point Patterns: Methodology and Applications with R.} CRC Press.
+\bibitem[BGR(2015)]{bgr} Bundesanstalt f\"ur Geowissenschaften und Rohstoffe, 2015.
+InSpEE-Salzstrukturen, \copyright\ BGR, Hannover.
+\bibitem[Clark \& Evans(1954)]{clark1954} Clark, P.J., Evans, F.C., 1954. Distance to nearest neighbor as a
+measure of spatial relationships in populations. \textit{Ecology} 35, 445--453.
+\bibitem[Fernandez \& Kaus(2015)]{fernandez2015} Fernandez, N., Kaus, B.J.P., 2015. Pattern formation in 3-D
+numerical models of down-built diapirs initiated by a Rayleigh--Taylor instability.
+\textit{Geophys.\ J.\ Int.} 202, 1253--1270.
+\bibitem[Hudec \& Jackson(2007)]{hudec2007} Hudec, M.R., Jackson, M.P.A., 2007. Terra infirma: Understanding
+salt tectonics. \textit{Earth-Sci.\ Rev.} 82, 1--28.
+\bibitem[Jackson \& Hudec(2017)]{jackson2017} Jackson, M.P.A., Hudec, M.R., 2017. \textit{Salt Tectonics:
+Principles and Practice.} Cambridge University Press.
+\bibitem[Martin(1980)]{martin1980} Martin, R.G., 1980. Distribution of salt structures, Gulf of Mexico.
+\textit{U.S.\ Geol.\ Surv.\ Misc.\ Field Studies Map} MF-1213.
+\bibitem[Myllym\"aki et al.(2017)]{myllymaki2017} Myllym\"aki, M., Mrkvi\v{c}ka, T., Grabarnik, P., Seijo, H.,
+Hahn, U., 2017. Global envelope tests for spatial processes. \textit{J.\ R.\ Stat.\ Soc.\ B} 79, 381--404.
+\bibitem[Reinhold et al.(2008)]{reinhold2008} Reinhold, K., Krull, P., Kockel, F., 2008. Salzstrukturen
+Norddeutschlands 1:500\,000. Bundesanstalt f\"ur Geowissenschaften und Rohstoffe, Hannover.
+\bibitem[Ripley(1977)]{ripley1977} Ripley, B.D., 1977. Modelling spatial patterns. \textit{J.\ R.\ Stat.\
+Soc.\ B} 39, 172--212.
+\bibitem[Torquato(2018)]{torquato2018} Torquato, S., 2018. Hyperuniform states of matter.
+\textit{Phys.\ Rep.} 745, 1--95.
+\bibitem[Trusheim(1960)]{trusheim1960} Trusheim, F., 1960. Mechanism of salt migration in northern Germany.
+\textit{AAPG Bull.} 44, 1519--1540.
+\bibitem[U.S.\ Geological Survey(2021)]{usgsgc} U.S.\ Geological Survey, 2021. Salt Diapirs in the Gulf Coast [gcdiapirg]. U.S.\
+Geological Survey data release, doi:10.5066/\allowbreak P9KH3WB4.
+\bibitem[Vendeville \& Jackson(1992)]{vendeville1992} Vendeville, B.C., Jackson, M.P.A., 1992. The rise of
+diapirs during thin-skinned extension. \textit{Mar.\ Pet.\ Geol.} 9, 331--353.
+\end{thebibliography}
+
+\end{document}
